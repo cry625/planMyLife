@@ -1,7 +1,7 @@
 <template>
   <div class="grid-container">
     <div class="grid-item" :class="['region', 'top-left']">
-      <div class="label label-red">紧急且重要</div>
+      <div class="label label-red">紧急且重要 Ⅰ</div>
       <div class="sub-container">
           <list-card title="事 业" />
           <list-card title="爱 好" />
@@ -9,15 +9,15 @@
         </div>
     </div>
     <div class="grid-item" :class="['region', 'top-right']">
-      <div class="label label-orange">紧急且不重要</div>
+      <div class="label label-orange">紧急且不重要 Ⅱ</div>
       <!-- 在这里添加你的内容 -->
     </div>
     <div class="grid-item" :class="['region', 'bottom-left']">
-      <div class="label label-green">不紧急且重要</div>
+      <div class="label label-green">不紧急且重要 Ⅲ</div>
       <!-- 在这里添加你的内容 -->
     </div>
     <div class="grid-item" :class="['region', 'bottom-right']">
-      <div class="label">不紧急且不重要</div>
+      <div class="label">不紧急且不重要 Ⅳ</div>
       <!-- 在这里添加你的内容 -->
     </div>
   </div>
