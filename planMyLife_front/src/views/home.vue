@@ -11,6 +11,11 @@
     <div class="grid-item" :class="['region', 'top-right']">
       <div class="label label-orange">紧急且不重要 Ⅱ</div>
       <!-- 在这里添加你的内容 -->
+      <div class="sub-container">
+        <ul>
+          <li v-for="item in itemList">{{ item.name }}</li>
+        </ul>
+      </div>
     </div>
     <div class="grid-item" :class="['region', 'bottom-left']">
       <div class="label label-green">不紧急且重要 Ⅲ</div>
@@ -20,7 +25,7 @@
       <div class="label">不紧急且不重要 Ⅳ</div>
       <!-- 在这里添加你的内容 -->
     </div>
-    <el-tree :data="treeData" show-checkbox node-key="id" default-expand-all  @check="handleCheckChange" />
+     <!--<el-tree :data="treeData" show-checkbox node-key="id" default-expand-all  @check="handleCheckChange" />
     <div v-if="checkedNodes.length">
       <h3>选中的节点：</h3>
       <ul>
@@ -29,7 +34,7 @@
     </div>
     <div v-else>
       <h3>没有选中的节点</h3>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>

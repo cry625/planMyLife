@@ -13,7 +13,7 @@ const apiClient = axios.create({
 // GET 请求
 export const getUser = async (params = {}) => {
   try {
-    const response = await apiClient.get("/get", { params });
+    const response = await apiClient.get("/events", { params });
     return response.data;
   } catch (error) {
     console.error("GET 请求失败:", error);
