@@ -13,7 +13,7 @@
       <!-- 在这里添加你的内容 -->
       <div class="sub-container">
         <ul>
-          <li v-for="item in itemList">{{ item.name }}</li>
+          <li v-for="item in itemList">{{ item.title }}</li>
         </ul>
       </div>
     </div>
@@ -25,7 +25,7 @@
       <div class="label">不紧急且不重要 Ⅳ</div>
       <!-- 在这里添加你的内容 -->
     </div>
-     <!--<el-tree :data="treeData" show-checkbox node-key="id" default-expand-all  @check="handleCheckChange" />
+    <el-tree :data="itemList" :props="props" show-checkbox node-key="id" default-expand-all  @check="handleCheckChange" />
     <div v-if="checkedNodes.length">
       <h3>选中的节点：</h3>
       <ul>
@@ -34,7 +34,7 @@
     </div>
     <div v-else>
       <h3>没有选中的节点</h3>
-    </div> -->
+    </div> 
   </div>
 </template>
 <script setup>
@@ -42,52 +42,11 @@ import { ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import listCard from '@/components/listCard.vue';
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
-const treeData = ref([
-  {
-    id: 1,
-    label: '一级 1',
-    children: [
-      {
-        id: 4,
-        label: '二级 1-1',
-        children: [
-          {
-            id: 9,
-            label: '三级 1-1-1'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 2,
-    label: '一级 2',
-    children: [
-      {
-        id: 5,
-        label: '二级 2-1'
-      },
-      {
-        id: 6,
-        label: '二级 2-2'
-      }
-    ]
-  },
-  {
-    id: 3,
-    label: '一级 3',
-    children: [
-      {
-        id: 7,
-        label: '二级 3-1'
-      },
-      {
-        id: 8,
-        label: '二级 3-2'
-      }
-    ]
-  }
-]);
+const itemList=ref({})
+const props = {
+  label: 'title',
+  children: 'zones',
+}
 // 用于存储选中的节点
 const checkedNodes = ref([]);
  
@@ -122,6 +81,7 @@ const handleCheckChange = (data, checked, indeterminate) => {
 };
 
 getUser({}).then(data => {
+  itemList.value=data
   console.log('获取的用户数据:', data);
 }).catch(error => {
   console.error('处理 GET 请求错误:', error);
