@@ -12,7 +12,7 @@
       <div class="label label-orange">紧急且不重要 Ⅱ</div>
       <!-- 在这里添加你的内容 -->
       <div class="sub-container">
-        <el-tree :data="treeData" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef"
+        <el-tree :data="treeData" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
           @check-change="handleCheckChange">
           <!-- <template v-slot="{ node, data }">
         <el-checkbox v-model="data.checked" @change="handleNodeCheckboxChange(node, data)"></el-checkbox>
@@ -49,6 +49,7 @@ import listCard from '@/components/listCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
 const treeRef = ref(null)
+const isExpand=ref(false)
 const rawList = ref([])
 // 数据和方法
 const treeData = ref([]);
@@ -143,20 +144,26 @@ getUser({}).then(data => {
 const treeStore = ref({
   expandAll: () => {
     if (treeRef.value) {
+      console.log("treeRef",treeRef.value)
       // 遍历树数据，将每个节点的 expanded 属性设置为 true
       setExpanded(treeData.value);
+      console.log("expandAll-tree",treeData.value)
+      isExpand.value=!isExpand.value
     }
   },
   collapseAll: () => {
     if (treeRef.value) {
       // 遍历树数据，将每个节点的 expanded 属性设置为 false
       setCollapsed(treeData.value);
+      console.log("collapseAll-tree",treeData.value)
+      isExpand.value=!isExpand.value
     }
   },
 });
 function setExpanded(nodes) {
   nodes.forEach(node => {
-    node.expanded = true;
+    let dom=treeRef.value.store.getNode(node.event_id)
+    dom.expanded = true;
     if (node.children) {
       setExpanded(node.children);
     }
@@ -164,7 +171,8 @@ function setExpanded(nodes) {
 }
 function setCollapsed(nodes) {
   nodes.forEach(node => {
-    node.expanded = false;
+    let dom=treeRef.value.store.getNode(node.event_id)
+    dom.expanded = false;
     if (node.children) {
       setCollapsed(node.children);
     }
