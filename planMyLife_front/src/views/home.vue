@@ -12,80 +12,164 @@
       <div class="label label-orange">紧急且不重要 Ⅱ</div>
       <!-- 在这里添加你的内容 -->
       <div class="sub-container">
-        <ul>
-          <li v-for="item in itemList">{{ item.title }}</li>
-        </ul>
+        <el-tree :data="treeData" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef"
+          @check-change="handleCheckChange">
+          <!-- <template v-slot="{ node, data }">
+        <el-checkbox v-model="data.checked" @change="handleNodeCheckboxChange(node, data)"></el-checkbox>
+        <span @mouseover="showDeleteIcon =true" @mouseleave="showDeleteIcon =false">{{ data.label }}</span>
+        <el-tooltip content="删除" placement="top">
+          <el-icon
+            v-if="showDeleteIcon"
+            @click.stop="handleDelete(node, data)"
+            class="delete-icon"
+          >
+            <Delete />
+          </el-icon>
+        </el-tooltip>
+      </template> -->
+        </el-tree>
       </div>
     </div>
     <div class="grid-item" :class="['region', 'bottom-left']">
       <div class="label label-green">不紧急且重要 Ⅲ</div>
       <!-- 在这里添加你的内容 -->
+
     </div>
     <div class="grid-item" :class="['region', 'bottom-right']">
       <div class="label">不紧急且不重要 Ⅳ</div>
       <!-- 在这里添加你的内容 -->
     </div>
-    <el-tree :data="itemList" :props="props" show-checkbox node-key="id" default-expand-all  @check="handleCheckChange" />
-    <div v-if="checkedNodes.length">
-      <h3>选中的节点：</h3>
-      <ul>
-        <li v-for="node in checkedNodes" :key="node.id">{{ node.label }}</li>
-      </ul>
-    </div>
-    <div v-else>
-      <h3>没有选中的节点</h3>
-    </div> 
+    <BubbleBox :tree-store="treeStore" />
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import listCard from '@/components/listCard.vue';
+import BubbleBox from '@/components/BubbleBox.vue';
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
-const itemList=ref({})
-const props = {
+const treeRef = ref(null)
+const rawList = ref([])
+// 数据和方法
+const treeData = ref([]);
+const defaultProps = ref({
+  children: 'children',
   label: 'title',
-  children: 'zones',
-}
-// 用于存储选中的节点
-const checkedNodes = ref([]);
- 
-// 处理选中节点变化的事件
-// 一个辅助函数，用于更新选中的节点列表
-const updateCheckedNodes = (checkedNodesList, checkedNodesMap, node, checked) => {
-  if (checked) {
-    // 如果节点被选中，添加到列表中（并添加到映射中以避免重复）
-    if (!checkedNodesMap[node.id]) {
-      checkedNodesList.push(node);
-      checkedNodesMap[node.id] = true;
-    }
-    // 递归地检查子节点（如果需要的话）
-    // 注意：这里的递归调用取决于你的需求，是否要选中所有子节点
+  isLeaf: 'isLeaf'
+});
+
+const showDeleteIcon = ref(false);
+
+onMounted(() => {
+  if (treeRef.value) {
+    console.log('treeRef已获取到el-tree组件的引用');
   } else {
-    // 如果节点被取消选中，从列表中移除（并从映射中移除）
-    checkedNodesList.splice(checkedNodesList.findIndex(n => n.id === node.id), 1);
-    delete checkedNodesMap[node.id];
-    // 递归地处理子节点（如果需要取消选中所有子节点）
-    // 注意：这里的递归调用取决于你的需求
+    console.log('treeRef未获取到el-tree组件的引用');
+  }
+});
+// 处理选择框变化
+const handleCheckChange = (data, checked, indeterminate) => {
+  // 根据 checked 更新 data.checked 状态
+  // 注意：这里的 data 可能是节点对象或节点数据，具体取决于 Element Plus 的版本和 API
+  // 如果 data 是节点对象，你需要访问 data.data 来获取节点数据
+  if (data.data) {
+    data.data.checked = checked;
+    updateNodeStyle(data.data);
+  } else {
+    data.checked = checked;
+    updateNodeStyle(data);
   }
 };
- 
-// 处理选中节点变化的事件
-const handleCheckChange = (data, checked, indeterminate) => {
-  const checkedNodesMap = {}; // 用于避免重复添加相同节点
-  // 清空当前的选中节点列表（因为可能会有节点被取消选中）
-  checkedNodes.value.splice(0, checkedNodes.length);
-  // 调用辅助函数来更新选中的节点列表（这里只处理当前节点，不递归处理子节点）
-  updateCheckedNodes(checkedNodes.value, checkedNodesMap, data, checked);
-  // 注意：如果你想要选中/取消选中所有子节点，你需要在这里添加递归逻辑
+
+// 更新节点样式（打勾后文字变灰并添加删除线）
+const updateNodeStyle = (data) => {
+  if (data.checked) {
+    // 你可以在这里添加额外的样式逻辑，比如通过 class 或 style 绑定
+  }
 };
 
+// 处理删除操作
+const handleDelete = (node, data) => {
+  ElMessage.confirm('确定要删除该事件吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    // 从树数据中移除该节点
+    removeNode(node, data);
+    ElMessage.success('删除成功');
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
+
+// 从树中移除节点的方法（需要根据你的数据结构来实现）
+const removeNode = (node, data) => {
+  // 遍历树数据并移除对应的节点
+  //将需要删除的父节点传递给后端，由后端进行删除操作
+};
+
+// 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
-  itemList.value=data
-  console.log('获取的用户数据:', data);
+  // 假设 data 是从后端获取的 rawList 数据的数组
+  rawList.value = data;
+  // 构建节点映射表
+  const nodeMap = {};
+  data.forEach(item => {
+    nodeMap[item.event_id] = { ...item, children: [], expanded: false };
+    delete nodeMap[item.event_id].parent_event_id_id; // 删除不再需要的属性
+  });
+
+  // 构建树状结构
+  const buildTree = (parentId = null) => {
+    return data
+      .filter(item => item.parent_event_id_id === parentId)
+      .map(item => {
+        const node = nodeMap[item.event_id];
+        node.children = buildTree(item.event_id); // 递归构建子树
+        return node;
+      });
+  };
+
+  // 赋值给 treeData
+  treeData.value = buildTree();
+
+  console.log('转换后的树状数据:', treeData.value);
 }).catch(error => {
   console.error('处理 GET 请求错误:', error);
 });
+
+// 自定义树状结构存储
+const treeStore = ref({
+  expandAll: () => {
+    if (treeRef.value) {
+      // 遍历树数据，将每个节点的 expanded 属性设置为 true
+      setExpanded(treeData.value);
+    }
+  },
+  collapseAll: () => {
+    if (treeRef.value) {
+      // 遍历树数据，将每个节点的 expanded 属性设置为 false
+      setCollapsed(treeData.value);
+    }
+  },
+});
+function setExpanded(nodes) {
+  nodes.forEach(node => {
+    node.expanded = true;
+    if (node.children) {
+      setExpanded(node.children);
+    }
+  });
+}
+function setCollapsed(nodes) {
+  nodes.forEach(node => {
+    node.expanded = false;
+    if (node.children) {
+      setCollapsed(node.children);
+    }
+  });
+}
 </script>
 <style scoped>
 .grid-container {
@@ -164,5 +248,7 @@ getUser({}).then(data => {
   background-size: 20px 20px;
 }
 
-/* 你可以使用 :class 绑定来为每个区域添加特定的样式，但在这个例子中我们不需要 */
+:deep(.el-tree) {
+  background: transparent;
+}
 </style>
