@@ -39,7 +39,7 @@
       <div class="label">不紧急且不重要 Ⅳ</div>
       <!-- 在这里添加你的内容 -->
     </div>
-    <BubbleBox :tree-store="treeStore" />
+    <BubbleBox :tree-store="treeStore" :is-expand="isExpand"/>
   </div>
 </template>
 <script setup>
@@ -162,8 +162,8 @@ const treeStore = ref({
 });
 function setExpanded(nodes) {
   nodes.forEach(node => {
-    let dom=treeRef.value.store.getNode(node.event_id)
-    dom.expanded = true;
+    let domNode=treeRef.value.store.getNode(node.event_id)
+    domNode.expanded = true;
     if (node.children) {
       setExpanded(node.children);
     }
@@ -171,8 +171,8 @@ function setExpanded(nodes) {
 }
 function setCollapsed(nodes) {
   nodes.forEach(node => {
-    let dom=treeRef.value.store.getNode(node.event_id)
-    dom.expanded = false;
+    let domNode=treeRef.value.store.getNode(node.event_id)
+    domNode.expanded = false;
     if (node.children) {
       setCollapsed(node.children);
     }
