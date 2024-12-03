@@ -61,18 +61,8 @@ const defaultProps = ref({
 
 const showDeleteIcon = ref(false);
 
-onMounted(() => {
-  if (treeRef.value) {
-    console.log('treeRef已获取到el-tree组件的引用');
-  } else {
-    console.log('treeRef未获取到el-tree组件的引用');
-  }
-});
 // 处理选择框变化
 const handleCheckChange = (data, checked, indeterminate) => {
-  // 根据 checked 更新 data.checked 状态
-  // 注意：这里的 data 可能是节点对象或节点数据，具体取决于 Element Plus 的版本和 API
-  // 如果 data 是节点对象，你需要访问 data.data 来获取节点数据
   if (data.data) {
     data.data.checked = checked;
     updateNodeStyle(data.data);
@@ -106,19 +96,8 @@ const handleDelete = (node, data) => {
 
 // 从树中移除节点的方法（需要根据你的数据结构来实现）
 const removeNode = (node, data) => {
-  // 遍历树数据并移除对应的节点
-  //将需要删除的父节点传递给后端，由后端进行删除操作
 };
-// 独立的 buildTree 函数
-function buildTree(data, nodeMap, parentId = null) {
-  return data
-    .filter(item => item.parent_event_id_id === parentId)
-    .map(item => {
-      const node = nodeMap[item.event_id];
-      node.children = buildTree(data, nodeMap, item.event_id); // 递归构建子树
-      return node;
-    });
-}
+
 // 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
   // 假设 data 是从后端获取的 rawList 数据的数组
@@ -130,8 +109,19 @@ getUser({}).then(data => {
     delete nodeMap[item.event_id].parent_event_id_id; // 删除不再需要的属性
   });
 
+  // 构建树状结构
+  const buildTree = (parentId = null) => {
+    return data
+      .filter(item => item.parent_event_id_id === parentId)
+      .map(item => {
+        const node = nodeMap[item.event_id];
+        node.children = buildTree(item.event_id); // 递归构建子树
+        return node;
+      });
+  };
+
   // 赋值给 treeData
-  treeData.value = buildTree(data, nodeMap);
+  treeData.value = buildTree();
 
   console.log('转换后的树状数据:', treeData.value);
 }).catch(error => {
@@ -243,8 +233,6 @@ function setCollapsed(nodes) {
 
 /* 为每个区域添加一些基本的样式（可选） */
 .region {
-  /* 你可以在这里添加任何你想要的样式 */
-  /* 比如背景颜色、字体大小等 */
   width: 100%;
   height: 100%;
   background-image: linear-gradient(to right,
