@@ -52,6 +52,7 @@ const collapseAllNodes = () => {
   border: 1px solid #ddd; 
   border-radius: 20px; 
   padding: 10px;
+  z-index: 99;
 }
 .extend-box {
   display: flex;

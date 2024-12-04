@@ -1,9 +1,15 @@
 <template>
   <div class="carousel-home">
-    <el-carousel :interval="4000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
+    <el-carousel :interval="10000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
       indicator-position="outer" :style="{ width: '100%', height: '100%'}">
-      <el-carousel-item v-for="item in 3" :key="item">
-
+      <el-carousel-item>
+        <FourQuadrants category="career" :data="classifiedTreeData.career"/>
+      </el-carousel-item>
+      <el-carousel-item>
+        <FourQuadrants category="hobby" :data="classifiedTreeData.hobby"/>
+      </el-carousel-item>
+      <el-carousel-item>
+        <FourQuadrants category="life" :data="classifiedTreeData.life"/>
       </el-carousel-item>
     </el-carousel>
     <BubbleBox :tree-store="treeStore" :is-expand="isExpand"/>
@@ -13,15 +19,11 @@
 import { ref } from 'vue';
 import ListCard from '@/components/ListCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
+import FourQuadrants from '@/components/FourQuadrants.vue';
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
-const rawList = ref([])
-const treeData = ref([])
+const rawList = ref({})
+const classifiedTreeData = ref({})
 const isExpand = ref(false)
-const classifiedList=ref([
-  {id:0,name:'career',data:[]},
-  {id:1,name:'hobby',data:[]},
-  {id:3,name:'life',data:[]},
-])
 // 独立的 buildTree 函数
 function buildTree(data, nodeMap, parentId = null) {
   return data
@@ -34,19 +36,30 @@ function buildTree(data, nodeMap, parentId = null) {
 }
 // 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
-  // 假设 data 是从后端获取的 rawList 数据的数组
-  rawList.value = data;
   // 构建节点映射表
-  const nodeMap = {};
+  const nodeMap = { career:[],hobby:[],life:[]};// 初始化节点映射表
   data.forEach(item => {
-    nodeMap[item.event_id] = { ...item, children: [], expanded: false };
-    delete nodeMap[item.event_id].parent_event_id_id; // 删除不再需要的属性
+    if(item.category==='career'){
+      nodeMap['career'][item.event_id] = { ...item, children: [], expanded: false };
+      delete nodeMap['career'][item.event_id].parent_event_id_id; // 删除不再需要的属性
+    }else if(item.category==='hobby'){
+      nodeMap['hobby'][item.event_id] = { ...item, children: [], expanded: false };
+      delete nodeMap['hobby'][item.event_id].parent_event_id_id; // 删除不再需要的属性
+    }else if(item.category==='life'){
+      nodeMap['life'][item.event_id] = { ...item, children: [], expanded: false };
+      delete nodeMap['life'][item.event_id].parent_event_id_id; // 删除不再需要的属性
+    }
   });
+  // 过滤数据并赋值给 rawList.value
+  rawList.value.career=data.filter(item=>item.category==='career')
+  rawList.value.hobby=data.filter(item=>item.category==='hobby')
+  rawList.value.life=data.filter(item=>item.category==='life')
+  // 构建树状结构并赋值给 classifiedTreeData
+  classifiedTreeData.value.career = buildTree(rawList.value.career, nodeMap['career']);
+  classifiedTreeData.value.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
+  classifiedTreeData.value.life = buildTree(rawList.value.life, nodeMap['life']);
 
-  // 赋值给 treeData
-  treeData.value = buildTree(data, nodeMap);
-
-  console.log('转换后的树状数据:', treeData.value);
+  console.log('转换后的树状数据:', classifiedTreeData.value);
 }).catch(error => {
   console.error('处理 GET 请求错误:', error);
 });
