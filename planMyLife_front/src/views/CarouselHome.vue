@@ -1,25 +1,25 @@
 <template>
   <div class="carousel-home">
-    <el-carousel :interval="10000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
-      indicator-position="outer" :style="{ width: '100%', height: '100%'}">
+    <el-carousel :interval="100000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
+      indicator-position="outer" :style="{ width: '100%', height: '100%' }">
       <el-carousel-item>
-        <FourQuadrants category="career" :data="classifiedTreeData.career"/>
+        <ListCard category="career" :data="classifiedTreeData.career"  />
       </el-carousel-item>
       <el-carousel-item>
-        <FourQuadrants category="hobby" :data="classifiedTreeData.hobby"/>
+        <ListCard category="hobby" :data="classifiedTreeData.hobby" />
       </el-carousel-item>
       <el-carousel-item>
-        <FourQuadrants category="life" :data="classifiedTreeData.life"/>
+        <ListCard category="life" :data="classifiedTreeData.life"/>
       </el-carousel-item>
     </el-carousel>
-    <BubbleBox :tree-store="treeStore" :is-expand="isExpand"/>
+    <BubbleBox :tree-store="treeStore" :is-expand="isExpand" />
   </div>
 </template>
 <script setup>
 import { ref } from 'vue';
 import ListCard from '@/components/ListCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
-import FourQuadrants from '@/components/FourQuadrants.vue';
+
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
 const rawList = ref({})
 const classifiedTreeData = ref({})
@@ -37,23 +37,23 @@ function buildTree(data, nodeMap, parentId = null) {
 // 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
   // 构建节点映射表
-  const nodeMap = { career:[],hobby:[],life:[]};// 初始化节点映射表
+  const nodeMap = { career: [], hobby: [], life: [] };// 初始化节点映射表
   data.forEach(item => {
-    if(item.category==='career'){
+    if (item.category === 'career') {
       nodeMap['career'][item.event_id] = { ...item, children: [], expanded: false };
       delete nodeMap['career'][item.event_id].parent_event_id_id; // 删除不再需要的属性
-    }else if(item.category==='hobby'){
+    } else if (item.category === 'hobby') {
       nodeMap['hobby'][item.event_id] = { ...item, children: [], expanded: false };
       delete nodeMap['hobby'][item.event_id].parent_event_id_id; // 删除不再需要的属性
-    }else if(item.category==='life'){
+    } else if (item.category === 'life') {
       nodeMap['life'][item.event_id] = { ...item, children: [], expanded: false };
       delete nodeMap['life'][item.event_id].parent_event_id_id; // 删除不再需要的属性
     }
   });
   // 过滤数据并赋值给 rawList.value
-  rawList.value.career=data.filter(item=>item.category==='career')
-  rawList.value.hobby=data.filter(item=>item.category==='hobby')
-  rawList.value.life=data.filter(item=>item.category==='life')
+  rawList.value.career = data.filter(item => item.category === 'career')
+  rawList.value.hobby = data.filter(item => item.category === 'hobby')
+  rawList.value.life = data.filter(item => item.category === 'life')
   // 构建树状结构并赋值给 classifiedTreeData
   classifiedTreeData.value.career = buildTree(rawList.value.career, nodeMap['career']);
   classifiedTreeData.value.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
@@ -90,13 +90,5 @@ getUser({}).then(data => {
   line-height: 200px;
   margin: 0;
   text-align: center;
-}
-
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
 }
 </style>

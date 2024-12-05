@@ -16,22 +16,26 @@
         {{ prop.category }}
       </div>
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <FourQuadrants :data="prop.data" />
+    </div>
   </div>
 </template>
 <script setup>
+import FourQuadrants from '@/components/FourQuadrants.vue';
 const prop = defineProps({
   category: String,
-  content: Object,
+  data: Object,
 });
 </script>
 <style scoped>
 .card-container {
-  padding: 0.2rem 0.1rem;
+  /* padding: 0.2rem 0.1rem;
   border-radius: 0.1rem;
-  width: 80%;
+  width: 80%; */
+  width: 100%;
   height: 100%;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 .card-orange {
@@ -39,7 +43,7 @@ const prop = defineProps({
 }
 
 .card-red {
-  background-color: #fceceb;
+  background-color: #ffe8f0;
 }
 
 .card-blue {
@@ -48,7 +52,7 @@ const prop = defineProps({
 
 .card-head {
   display: flex;
-  margin: 6px 10px;
+  padding: 16px 10px;
 }
 
 .card-title {
@@ -66,5 +70,9 @@ const prop = defineProps({
 
 .card-title-blue {
   color: #3164cf;
+}
+.content{
+  width: 100%;
+  height: 100%;
 }
 </style>

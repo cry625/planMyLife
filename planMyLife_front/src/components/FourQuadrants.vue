@@ -3,9 +3,9 @@
     <div class="grid-item" :class="['region', 'top-left']">
       <div class="label label-red">紧急且重要 Ⅰ</div>
       <div class="sub-container">
-        <ListCard category="career" v-if="category=='career'"/>
+        <!-- <ListCard category="career" v-if="category=='career'"/>
         <ListCard category="hobby" v-if="category=='hobby'"/>
-        <ListCard category="life" v-if="category=='life'"/>
+        <ListCard category="life" v-if="category=='life'"/> -->
       </div>
     </div>
     <div class="grid-item" :class="['region', 'top-right']">
@@ -103,15 +103,15 @@ const removeNode = (node, data) => {
   /* 两列，每列占据相等的宽度 */
   grid-template-rows: 1fr 1fr;
   /* 两行，每行占据相等的高度 */
-  height: 100%;
+  height: calc(100% - 100px);
   /* 使容器占满整个视口高度 */
-  width: 100%;
+  width: 96%;
   /* 使容器占满整个视口宽度，可选，因为默认就是占满宽度 */
   gap: 0;
   /* 网格项之间的间距，这里设置为0以填满整个页面 */
   padding: 0;
   /* 去除容器内边距，以确保网格项填满 */
-  margin: 0;
+  margin: 0 auto;
   /* 去除容器外边距，以确保填满整个页面 */
   box-sizing: border-box;
   /* 确保padding和border不会增加容器的总尺寸 */
@@ -124,7 +124,7 @@ const removeNode = (node, data) => {
   /* 内边距，根据需要调整 */
   box-sizing: border-box;
   /* 确保padding不会增加网格项的尺寸 */
-  border: 1px solid #a8a5a5;
+  border: 1px solid #dfe6e9;
 }
 
 .label {
