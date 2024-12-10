@@ -3,16 +3,16 @@
     <div class="grid-item" :class="['region', 'top-left']">
       <div class="label label-red">紧急且重要 Ⅰ</div>
       <div class="sub-container">
-        <!-- <ListCard category="career" v-if="category=='career'"/>
-        <ListCard category="hobby" v-if="category=='hobby'"/>
-        <ListCard category="life" v-if="category=='life'"/> -->
+        <el-tree :data="prop.data.IU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
+        @check-change="handleCheckChange">
+        </el-tree>
       </div>
     </div>
     <div class="grid-item" :class="['region', 'top-right']">
       <div class="label label-orange">紧急且不重要 Ⅱ</div>
       <!-- 在这里添加你的内容 -->
       <div class="sub-container">
-        <el-tree :data="prop.data" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
+        <el-tree :data="prop.data.INU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
           @check-change="handleCheckChange">
           <!-- <template v-slot="{ node, data }">
         <el-checkbox v-model="data.checked" @change="handleNodeCheckboxChange(node, data)"></el-checkbox>
@@ -32,12 +32,15 @@
     </div>
     <div class="grid-item" :class="['region', 'bottom-left']">
       <div class="label label-green">不紧急且重要 Ⅲ</div>
-      <!-- 在这里添加你的内容 -->
-
+      <el-tree :data="prop.data.NU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
+        @check-change="handleCheckChange">
+        </el-tree>
     </div>
     <div class="grid-item" :class="['region', 'bottom-right']">
       <div class="label">不紧急且不重要 Ⅳ</div>
-      <!-- 在这里添加你的内容 -->
+      <el-tree :data="prop.data.NNU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
+        @check-change="handleCheckChange">
+        </el-tree>
     </div>
   </div>
 </template>
@@ -56,8 +59,9 @@ const defaultProps = ref({
 });
 const prop=defineProps({
   category:String,
-  data:Array
+  data:Object
 })
+
 // 处理选择框变化
 const handleCheckChange = (data, checked, indeterminate) => {
   if (data.data) {

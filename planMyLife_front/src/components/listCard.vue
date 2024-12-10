@@ -17,16 +17,38 @@
       </div>
     </div>
     <div class="content">
-      <FourQuadrants :data="prop.data" />
+      <FourQuadrants :data="classifiedTree4QuaData" />
     </div>
   </div>
 </template>
 <script setup>
 import FourQuadrants from '@/components/FourQuadrants.vue';
+import { ref } from 'vue';
 const prop = defineProps({
   category: String,
-  data: Object,
+  data: Array,
 });
+const classifiedTree4QuaData=ref({})
+classifiedTree4QuaData.value={
+  IU:[],
+  INU:[],
+  NU:[],
+  NNU:[],
+}
+const classifiedTreeArr=ref([])
+
+// classifiedTreeArr.value=Object.assign([], prop.data[prop.category])
+classifiedTreeArr.value=Object.assign([], prop.data)
+
+console.log('category',prop.category)
+console.log('data',prop.data)
+// console.log('data[prop.category]',prop.data[prop.category])
+console.log('classifiedTreeArr',classifiedTreeArr.value)
+
+classifiedTreeArr.value.forEach(item => {
+  classifiedTree4QuaData.value[item.quadrant].push(item)
+});
+console.log('classifiedTree4QuaData',classifiedTree4QuaData.value)
 </script>
 <style scoped>
 .card-container {

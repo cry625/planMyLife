@@ -21,6 +21,7 @@ import ListCard from '@/components/ListCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
 
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
+import { ElMessage } from 'element-plus';
 const rawList = ref({})
 const classifiedTreeData = ref({})
 const isExpand = ref(false)
@@ -59,9 +60,9 @@ getUser({}).then(data => {
   classifiedTreeData.value.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
   classifiedTreeData.value.life = buildTree(rawList.value.life, nodeMap['life']);
 
-  console.log('转换后的树状数据:', classifiedTreeData.value);
+  // console.log('转换后的树状数据:', classifiedTreeData.value);
 }).catch(error => {
-  console.error('处理 GET 请求错误:', error);
+  ElMessage('处理 GET 请求错误:', error);
 });
 
 </script>
