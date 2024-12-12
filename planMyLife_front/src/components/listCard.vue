@@ -1,19 +1,19 @@
 <template>
   <div class="card-container" :class="{
-    'card-blue': prop.category == 'career',
-    'card-orange': prop.category == 'life',
-    'card-red': prop.category == 'hobby',
+    'card-blue': props.category == 'career',
+    'card-orange': props.category == 'life',
+    'card-red': props.category == 'hobby',
   }">
     <div class="card-head">
-      <img src="/hobby.png" alt="hobby" v-if="prop.category == 'hobby'" width="24" height="24" />
-      <img src="/life.png" alt="life" v-if="prop.category == 'life'" width="24" height="24" />
-      <img src="/career.png" alt="career" v-if="prop.category == 'career'" width="24" height="24" />
+      <img src="/hobby.png" alt="hobby" v-if="props.category == 'hobby'" width="24" height="24" />
+      <img src="/life.png" alt="life" v-if="props.category == 'life'" width="24" height="24" />
+      <img src="/career.png" alt="career" v-if="props.category == 'career'" width="24" height="24" />
       <div class="card-title" :class="{
-        'card-title-blue': prop.category == 'career',
-        'card-title-orange': prop.category == 'life',
-        'card-title-red': prop.category == 'hobby',
+        'card-title-blue': props.category == 'career',
+        'card-title-orange': props.category == 'life',
+        'card-title-red': props.category == 'hobby',
       }">
-        {{ prop.category }}
+        {{ props.category }}
       </div>
     </div>
     <div class="content">
@@ -23,32 +23,44 @@
 </template>
 <script setup>
 import FourQuadrants from '@/components/FourQuadrants.vue';
-import { ref } from 'vue';
-const prop = defineProps({
-  category: String,
-  data: Array,
+import { ref, watch } from 'vue';
+import { defineProps } from 'vue';
+const props = defineProps({
+  category: {
+    type: String,
+    required: true
+  },
+  data: {
+    type: Array,
+    required: true
+  }
 });
-const classifiedTree4QuaData=ref({})
-classifiedTree4QuaData.value={
-  IU:[],
-  INU:[],
-  NU:[],
-  NNU:[],
+
+watch(props.data, (newVal) => {
+  console.log('newVal', newVal);
+})
+const classifiedTree4QuaData = ref({})
+classifiedTree4QuaData.value = {
+  IU: [],
+  INU: [],
+  NU: [],
+  NNU: [],
 }
-const classifiedTreeArr=ref([])
+const classifiedTreeArr = ref([])
+console.log('ListCard data:', props.data);
+classifiedTreeArr.value = Object.assign([], props.data)
+console.log('0000000', classifiedTreeArr.value === props.data)
+console.log('classifiedTreeArr', classifiedTreeArr.value)
 
-// classifiedTreeArr.value=Object.assign([], prop.data[prop.category])
-classifiedTreeArr.value=Object.assign([], prop.data)
-
-console.log('category',prop.category)
-console.log('data',prop.data)
-// console.log('data[prop.category]',prop.data[prop.category])
-console.log('classifiedTreeArr',classifiedTreeArr.value)
+console.log('category', props.category)
+console.log('data', props.data)
+// console.log('data[props.category]',props.data[props.category])
+console.log('classifiedTreeArr', classifiedTreeArr.value)
 
 classifiedTreeArr.value.forEach(item => {
   classifiedTree4QuaData.value[item.quadrant].push(item)
 });
-console.log('classifiedTree4QuaData',classifiedTree4QuaData.value)
+console.log('classifiedTree4QuaData', classifiedTree4QuaData.value)
 </script>
 <style scoped>
 .card-container {
@@ -93,7 +105,8 @@ console.log('classifiedTree4QuaData',classifiedTree4QuaData.value)
 .card-title-blue {
   color: #3164cf;
 }
-.content{
+
+.content {
   width: 100%;
   height: 100%;
 }

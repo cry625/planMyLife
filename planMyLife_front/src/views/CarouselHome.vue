@@ -2,21 +2,21 @@
   <div class="carousel-home">
     <el-carousel :interval="100000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
       indicator-position="outer" :style="{ width: '100%', height: '100%' }">
-      <el-carousel-item>
-        <ListCard category="career" :data="classifiedTreeData.career"  />
+      <el-carousel-item v-if="classifiedTreeData.career?.length">
+        <ListCard category="career" :data="classifiedTreeData.career" />
       </el-carousel-item>
-      <el-carousel-item>
+      <el-carousel-item v-if="classifiedTreeData.hobby?.length">
         <ListCard category="hobby" :data="classifiedTreeData.hobby" />
       </el-carousel-item>
-      <el-carousel-item>
-        <ListCard category="life" :data="classifiedTreeData.life"/>
+      <el-carousel-item v-if="classifiedTreeData.life?.length">
+        <ListCard category="life" :data="classifiedTreeData.life" />
       </el-carousel-item>
     </el-carousel>
-    <BubbleBox :tree-store="treeStore" :is-expand="isExpand" />
+    <BubbleBox :tree-store="classifiedTreeData" :is-expand="isExpand" />
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ListCard from '@/components/ListCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
 
@@ -35,7 +35,7 @@ function buildTree(data, nodeMap, parentId = null) {
       return node;
     });
 }
-// 从后端获取数据并转换为树状结构
+  // 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
   // 构建节点映射表
   const nodeMap = { career: [], hobby: [], life: [] };// 初始化节点映射表
@@ -60,10 +60,11 @@ getUser({}).then(data => {
   classifiedTreeData.value.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
   classifiedTreeData.value.life = buildTree(rawList.value.life, nodeMap['life']);
 
-  // console.log('转换后的树状数据:', classifiedTreeData.value);
+  console.log('转换后的树状数据:', classifiedTreeData.value);
 }).catch(error => {
   ElMessage('处理 GET 请求错误:', error);
 });
+
 
 </script>
 <style lang="scss" scoped>
