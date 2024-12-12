@@ -45,7 +45,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import ListCard from '@/components/ListCard.vue';
+import ListCard from '@/components/listCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
 const treeRef = ref(null)

@@ -1,7 +1,7 @@
 <template>
   <div class="carousel-home">
     <el-carousel :interval="100000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
-      indicator-position="outer" :style="{ width: '100%', height: '100%' }">
+      indicator-position="" :style="{ width: '100%', height: '100%' }">
       <el-carousel-item v-if="classifiedTreeData.career?.length">
         <ListCard category="career" :data="classifiedTreeData.career" />
       </el-carousel-item>
@@ -16,22 +16,23 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import ListCard from '@/components/ListCard.vue';
+import { onMounted, ref ,reactive} from 'vue';
+import ListCard from '@/components/listCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
 
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
 import { ElMessage } from 'element-plus';
 const rawList = ref({})
-const classifiedTreeData = ref({})
+const classifiedTreeData = reactive({})
+const bbb = ref({a:"laksjdfljasdlf"})
 const isExpand = ref(false)
 // 独立的 buildTree 函数
-function buildTree(data, nodeMap, parentId = null) {
+function buildTree(data, nodeMapx, parentId = null) {
   return data
     .filter(item => item.parent_event_id_id === parentId)
     .map(item => {
-      const node = nodeMap[item.event_id];
-      node.children = buildTree(data, nodeMap, item.event_id); // 递归构建子树
+      const node = nodeMapx[item.event_id];
+      node.children = buildTree(data, nodeMapx, item.event_id); // 递归构建子树
       return node;
     });
 }
@@ -56,11 +57,11 @@ getUser({}).then(data => {
   rawList.value.hobby = data.filter(item => item.category === 'hobby')
   rawList.value.life = data.filter(item => item.category === 'life')
   // 构建树状结构并赋值给 classifiedTreeData
-  classifiedTreeData.value.career = buildTree(rawList.value.career, nodeMap['career']);
-  classifiedTreeData.value.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
-  classifiedTreeData.value.life = buildTree(rawList.value.life, nodeMap['life']);
+  classifiedTreeData.career = buildTree(rawList.value.career, nodeMap['career']);
+  classifiedTreeData.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
+  classifiedTreeData.life = buildTree(rawList.value.life, nodeMap['life']);
 
-  console.log('转换后的树状数据:', classifiedTreeData.value);
+  console.log('转换后的树状数据:', classifiedTreeData);
 }).catch(error => {
   ElMessage('处理 GET 请求错误:', error);
 });
