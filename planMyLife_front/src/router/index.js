@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: '/home',//将三种分类、四种象限放在同一个页面中
-      component: () => import('../views/Home.vue'),
+      component: () => import('../views/home.vue'),
     },
     {
       path: '/carouselHome',

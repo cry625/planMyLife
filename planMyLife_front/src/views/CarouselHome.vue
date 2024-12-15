@@ -22,50 +22,24 @@ import BubbleBox from '@/components/BubbleBox.vue';
 
 import { getUser, deleteUser, createUser, updateUser } from '@/api/userApi';
 import { ElMessage } from 'element-plus';
+import { useTreeStore, buildTree } from '@/stores/tree';
 const rawList = ref({})
 const classifiedTreeData = reactive({})
-const bbb = ref({a:"laksjdfljasdlf"})
 const isExpand = ref(false)
-// 独立的 buildTree 函数
-function buildTree(data, nodeMapx, parentId = null) {
-  return data
-    .filter(item => item.parent_event_id_id === parentId)
-    .map(item => {
-      const node = nodeMapx[item.event_id];
-      node.children = buildTree(data, nodeMapx, item.event_id); // 递归构建子树
-      return node;
-    });
-}
+
+const treeStore=useTreeStore()
+
   // 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
-  // 构建节点映射表
-  const nodeMap = { career: [], hobby: [], life: [] };// 初始化节点映射表
-  data.forEach(item => {
-    if (item.category === 'career') {
-      nodeMap['career'][item.event_id] = { ...item, children: [], expanded: false };
-      delete nodeMap['career'][item.event_id].parent_event_id_id; // 删除不再需要的属性
-    } else if (item.category === 'hobby') {
-      nodeMap['hobby'][item.event_id] = { ...item, children: [], expanded: false };
-      delete nodeMap['hobby'][item.event_id].parent_event_id_id; // 删除不再需要的属性
-    } else if (item.category === 'life') {
-      nodeMap['life'][item.event_id] = { ...item, children: [], expanded: false };
-      delete nodeMap['life'][item.event_id].parent_event_id_id; // 删除不再需要的属性
+let category=['career','hobby','life']
+let quadrant=['IU','INU','NU','NNU']
+ for (let c of category) {
+    for(let q of quadrant){
+      buildTree(data.filter(i=>(i.category === c && i.quadrant === q)),treeStore.tree[c][q],null)
     }
-  });
-  // 过滤数据并赋值给 rawList.value
-  rawList.value.career = data.filter(item => item.category === 'career')
-  rawList.value.hobby = data.filter(item => item.category === 'hobby')
-  rawList.value.life = data.filter(item => item.category === 'life')
-  // 构建树状结构并赋值给 classifiedTreeData
-  classifiedTreeData.career = buildTree(rawList.value.career, nodeMap['career']);
-  classifiedTreeData.hobby = buildTree(rawList.value.hobby, nodeMap['hobby']);
-  classifiedTreeData.life = buildTree(rawList.value.life, nodeMap['life']);
-
-  console.log('转换后的树状数据:', classifiedTreeData);
-}).catch(error => {
-  ElMessage('处理 GET 请求错误:', error);
-});
-
+}
+console.log("done")
+})
 
 </script>
 <style lang="scss" scoped>

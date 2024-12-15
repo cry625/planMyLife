@@ -48,7 +48,7 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { defineProps } from 'vue';
-import ListCard from '@/components/ListCard.vue';
+import ListCard from '@/components/listCard.vue';
 const treeRef = ref(null)
 const isExpand=ref(false)
 // 数据和方法
