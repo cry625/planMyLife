@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="content">
-      <FourQuadrants :data="classifiedTree4QuaData" />
+      <FourQuadrants :category="props.category"/>
     </div>
   </div>
 </template>
@@ -30,37 +30,8 @@ const props = defineProps({
     type: String,
     required: true
   },
-  data: {
-    type: Array,
-    required: true
-  }
 });
-
-watch(props.data, (newVal) => {
-  console.log('newVal', newVal);
-})
-const classifiedTree4QuaData = ref({})
-classifiedTree4QuaData.value = {
-  IU: [],
-  INU: [],
-  NU: [],
-  NNU: [],
-}
-const classifiedTreeArr = ref([])
-console.log('ListCard data:', props.data);
-classifiedTreeArr.value = Object.assign([], props.data)
-console.log('0000000', classifiedTreeArr.value === props.data)
-console.log('classifiedTreeArr', classifiedTreeArr.value)
-
-console.log('category', props.category)
-console.log('data', props.data)
-// console.log('data[props.category]',props.data[props.category])
-console.log('classifiedTreeArr', classifiedTreeArr.value)
-
-classifiedTreeArr.value.forEach(item => {
-  classifiedTree4QuaData.value[item.quadrant].push(item)
-});
-console.log('classifiedTree4QuaData', classifiedTree4QuaData.value)
+console.log("done2",props)
 </script>
 <style scoped>
 .card-container {

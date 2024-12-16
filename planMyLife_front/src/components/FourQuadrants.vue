@@ -3,45 +3,12 @@
     <div class="grid-item" :class="['region', 'top-left']">
       <div class="label label-red">紧急且重要 Ⅰ</div>
       <div class="sub-container">
-        <el-tree :data="props.data.IU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
+        <el-tree :data="classifiedTreeData.IU.children" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
         @check-change="handleCheckChange">
         </el-tree>
       </div>
     </div>
-    <div class="grid-item" :class="['region', 'top-right']">
-      <div class="label label-orange">紧急且不重要 Ⅱ</div>
-      <!-- 在这里添加你的内容 -->
-      <div class="sub-container">
-        <el-tree :data="props.data.INU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
-          @check-change="handleCheckChange">
-          <!-- <template v-slot="{ node, data }">
-        <el-checkbox v-model="data.checked" @change="handleNodeCheckboxChange(node, data)"></el-checkbox>
-        <span @mouseover="showDeleteIcon =true" @mouseleave="showDeleteIcon =false">{{ data.label }}</span>
-        <el-tooltip content="删除" placement="top">
-          <el-icon
-            v-if="showDeleteIcon"
-            @click.stop="handleDelete(node, data)"
-            class="delete-icon"
-          >
-            <Delete />
-          </el-icon>
-        </el-tooltip>
-      </template> -->
-        </el-tree>
-      </div>
-    </div>
-    <div class="grid-item" :class="['region', 'bottom-left']">
-      <div class="label label-green">不紧急且重要 Ⅲ</div>
-      <el-tree :data="props.data.NU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
-        @check-change="handleCheckChange">
-        </el-tree>
-    </div>
-    <div class="grid-item" :class="['region', 'bottom-right']">
-      <div class="label">不紧急且不重要 Ⅳ</div>
-      <el-tree :data="props.data.NNU" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
-        @check-change="handleCheckChange">
-        </el-tree>
-    </div>
+
   </div>
 </template>
 <script setup>
@@ -49,31 +16,36 @@ import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { defineProps } from 'vue';
 import ListCard from '@/components/listCard.vue';
+import { useTreeStore, buildTree } from '@/stores/tree';
+
+const treeStore=useTreeStore()
 const treeRef = ref(null)
 const isExpand=ref(false)
 // 数据和方法
-const treeData = ref([]);
 const defaultProps = ref({
   children: 'children',
   label: 'title',
   isLeaf: 'isLeaf'
 });
-const props=defineProps({
-  data: {
-    type: Object,
+const props = defineProps({
+  category: {
+    type: String,
     required: true
-  }
-})
-
+  },
+});
+const classifiedTreeData=ref({})
+console.log("cate",props.category)
+classifiedTreeData.value=treeStore.tree[props.category]
+console.log("classifiedTreeData",classifiedTreeData.value)
 // 处理选择框变化
 const handleCheckChange = (data, checked, indeterminate) => {
-  if (data.data) {
-    data.data.checked = checked;
-    updateNodeStyle(data.data);
-  } else {
-    data.checked = checked;
-    updateNodeStyle(data);
-  }
+  // if (data.data) {
+  //   data.data.checked = checked;
+  //   updateNodeStyle(data.data);
+  // } else {
+  //   data.checked = checked;
+  //   updateNodeStyle(data);
+  // }
 };
 
 // 更新节点样式（打勾后文字变灰并添加删除线）

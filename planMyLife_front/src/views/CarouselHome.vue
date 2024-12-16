@@ -2,14 +2,14 @@
   <div class="carousel-home">
     <el-carousel :interval="100000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
       indicator-position="" :style="{ width: '100%', height: '100%' }">
-      <el-carousel-item v-if="classifiedTreeData.career?.length">
-        <ListCard category="career" :data="classifiedTreeData.career" />
+      <el-carousel-item >
+        <ListCard :category="'career'"  />
       </el-carousel-item>
-      <el-carousel-item v-if="classifiedTreeData.hobby?.length">
-        <ListCard category="hobby" :data="classifiedTreeData.hobby" />
+      <el-carousel-item >
+        <ListCard :category="'hobby'" />
       </el-carousel-item>
-      <el-carousel-item v-if="classifiedTreeData.life?.length">
-        <ListCard category="life" :data="classifiedTreeData.life" />
+      <el-carousel-item >
+        <ListCard :category="'life'"  />
       </el-carousel-item>
     </el-carousel>
     <BubbleBox :tree-store="classifiedTreeData" :is-expand="isExpand" />
@@ -38,7 +38,7 @@ let quadrant=['IU','INU','NU','NNU']
       buildTree(data.filter(i=>(i.category === c && i.quadrant === q)),treeStore.tree[c][q],null)
     }
 }
-console.log("done")
+console.log("done",treeStore.tree)
 })
 
 </script>
