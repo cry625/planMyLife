@@ -47,11 +47,10 @@ export const useTreeStore = defineStore('tree', {
 })
 
 export function buildTree(data, parent, parentId = null) {
-  return data
-    .filter(item => item.parent_event_id_id === parentId)
-    .forEach(item => {
-      item.children = []
-      parent.children.push(item)
-      item.children = buildTree(data, item, item.event_id);
-    });
+  let filtered_data = data.filter(item => item.parent_event_id_id === parentId)
+  filtered_data.forEach(item => {
+    item.children = []
+    parent.children.push(item)
+    buildTree(data, item, item.event_id);
+  });
 }
