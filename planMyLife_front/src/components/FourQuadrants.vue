@@ -1,9 +1,9 @@
 <template>
   <div class="grid-container">
-    <div class="grid-item" :class="['region', 'top-left']">
-      <div class="label label-red">紧急且重要 Ⅰ</div>
+    <div class="grid-item" :class="['region', 'top-left']" v-for="(item,key) in htmlList" :key="key">
+      <div class="label" :class="item.class">{{ item.title }}</div>
       <div class="sub-container">
-        <el-tree :data="classifiedTreeData.IU.children" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
+        <el-tree :data="classifiedTreeData[item.id].children" show-checkbox :props="defaultProps" node-key="event_id" ref="treeRef" :default-expand-all="isExpand"
         @check-change="handleCheckChange">
         </el-tree>
       </div>
@@ -17,10 +17,15 @@ import { ElMessage } from 'element-plus';
 import { defineProps } from 'vue';
 import ListCard from '@/components/listCard.vue';
 import { useTreeStore, buildTree } from '@/stores/tree';
-
+const htmlList=[
+  {title:'紧急且重要 Ⅰ',class:'label-red',id:'IU'},
+  {title:'紧急且重要 Ⅱ',class:'label-orange',id:'INU'},
+  {title:'重要但不紧急 Ⅰ',class:'label-green',id:'NU'},
+  {title:'重要但不紧急 Ⅱ',class:'',id:'NNU'},
+]
 const treeStore=useTreeStore()
 const treeRef = ref(null)
-const isExpand=ref(false)
+const isExpand=ref(true)
 // 数据和方法
 const defaultProps = ref({
   children: 'children',

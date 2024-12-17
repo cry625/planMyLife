@@ -1,22 +1,22 @@
 <template>
   <div class="carousel-home">
-    <el-carousel :interval="100000" type="card" autoPlay animation-name="card" show-arrow="never" height="100%"
-      indicator-position="" :style="{ width: '100%', height: '100%' }">
-      <el-carousel-item >
-        <ListCard :category="'career'"  />
+    <el-carousel :interval="100000" :type="isMobile?'':'card'" autoPlay animation-name="card" show-arrow="never" height="100%" indicator-position=""
+      :style="{ width: '100%', height: '100%' }">
+      <el-carousel-item>
+        <ListCard :category="'career'" />
       </el-carousel-item>
-      <el-carousel-item >
+      <el-carousel-item>
         <ListCard :category="'hobby'" />
       </el-carousel-item>
-      <el-carousel-item >
-        <ListCard :category="'life'"  />
+      <el-carousel-item>
+        <ListCard :category="'life'" />
       </el-carousel-item>
     </el-carousel>
     <BubbleBox :tree-store="classifiedTreeData" :is-expand="isExpand" />
   </div>
 </template>
 <script setup>
-import { onMounted, ref ,reactive} from 'vue';
+import { ref, reactive,onMounted, onBeforeUnmount } from 'vue';
 import ListCard from '@/components/listCard.vue';
 import BubbleBox from '@/components/BubbleBox.vue';
 
@@ -27,18 +27,33 @@ const rawList = ref({})
 const classifiedTreeData = reactive({})
 const isExpand = ref(false)
 
-const treeStore=useTreeStore()
+const treeStore = useTreeStore()
 
-  // 从后端获取数据并转换为树状结构
+const isMobile = ref(false);
+
+const checkDevice = () => {
+  isMobile.value = window.innerWidth <= 768; // 判断是否为手机
+};
+
+onMounted(() => {
+  checkDevice();
+  window.addEventListener('resize', checkDevice);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkDevice);
+});
+
+// 从后端获取数据并转换为树状结构
 getUser({}).then(data => {
-let category=['career','hobby','life']
-let quadrant=['IU','INU','NU','NNU']
- for (let c of category) {
-    for(let q of quadrant){
-      buildTree(data.filter(i=>(i.category === c && i.quadrant === q)),treeStore.tree[c][q],null)
+  let category = ['career', 'hobby', 'life']
+  let quadrant = ['IU', 'INU', 'NU', 'NNU']
+  for (let c of category) {
+    for (let q of quadrant) {
+      buildTree(data.filter(i => (i.category === c && i.quadrant === q)), treeStore.tree[c][q], null)
     }
-}
-console.log("done",treeStore.tree)
+  }
+  console.log("done", treeStore.tree)
 })
 
 </script>
