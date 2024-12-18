@@ -1,14 +1,10 @@
-// stores/counter.js
 import { defineStore } from 'pinia'
-
-// 下面定义的useCounterStore 返回值我们称之为`state`对象
-// 第一个参数 'counter' 就是store的id
 export const useTreeStore = defineStore('tree', {
   state: () => {
-    // return的对象里面的属性可以直接访问
     return {
       tree: {
-        career: { IU: {
+        career: { 
+          IU: {
           children:[]
         }, INU: {
           children:[]
@@ -17,7 +13,8 @@ export const useTreeStore = defineStore('tree', {
         }, NNU: {
           children:[]
         } },
-        hobby: { IU: {
+        hobby: { 
+          IU: {
           children:[]
         }, INU: {
           children:[]
@@ -26,7 +23,8 @@ export const useTreeStore = defineStore('tree', {
         }, NNU: {
           children:[]
         } },
-        life: { IU: {
+        life: { 
+          IU: {
           children:[]
         }, INU: {
           children:[]
@@ -39,13 +37,11 @@ export const useTreeStore = defineStore('tree', {
     }
   },
   getters: {
-    // 类似于computed计算属性 接受一个state为参数
   },
   actions: {
-    // 里面的方法可以直接调用 用来封装比较复杂的用法
   },
 })
-
+//构建子父关系的树形结构
 export function buildTree(data, parent, parentId = null) {
   let filtered_data = data.filter(item => item.parent_event_id_id === parentId)
   filtered_data.forEach(item => {
