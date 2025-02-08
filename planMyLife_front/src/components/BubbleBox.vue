@@ -9,7 +9,7 @@
       <el-button :icon="CirclePlusFilled" type="success" plain round @click="addNewNote"></el-button>
     </div>
     <!-- 添加node弹窗 -->
-    <DialogNode :isShow="addDialogIsShow" module="add" :Node="{}" :confirmFunc="consoleFunc" />
+    <DialogNode :isShow="addDialogIsShow" module="add" :Node="{}" :confirmFunc="consoleFunc" @close-dialog="closeAddDialog"/>
   </div>
 </template>
 
@@ -47,6 +47,9 @@ function addNewNote() {
 }
 function consoleFunc() {
   console.log('确认添加');
+}
+function closeAddDialog(value){
+  addDialogIsShow.value=value
 }
 </script>
 

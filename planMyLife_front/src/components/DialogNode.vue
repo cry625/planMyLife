@@ -27,14 +27,15 @@ const titleList = [
 ]
 const title = ref(titleList.find(item => item.value === props.module)?.label || '')
 
-const emit = defineEmits(['update:props.isShow'])
+const emit = defineEmits(['closeDialog'])
 // 处理取消按钮的点击事件: 关闭弹窗,清空输入框
 const handleCancel = () => {
-  emit('update:props.isShow', false) // 发出事件，更新父组件中的 isShow
+  emit('closeDialog', !props.isShow) // 发出事件，更新父组件中的 isShow
 }
 // 处理确定按钮的点击事件: 关闭弹窗,调用props.confirmFunc将输入框内容作为新节点添加到列表中
 const handleConfirm = () =>{
   props.confirmFunc()
+  emit('closeDialog', !props.isShow) 
 }
 </script>
 <style lang="less" scoped>
